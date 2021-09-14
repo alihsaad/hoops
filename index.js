@@ -51,7 +51,7 @@ request(url, (error, res, html) => {
         let player = new Player(name, pos, age, team_id, g, gs, mp, fg, fga, fg_pct, fg3,fg3a, fg3_pct, fg2, fg2a, fg2_pct, efg_pct, ft, fta, ft_pct, orb, drb, trb, ast, stl, blk, tov, pf, pts);
         myPlayers.push(player);
 
-        //console.log(player.getName());
+        console.log(player.getName());
         //getters arent working for some reason but fix tomorrow 
              
 
