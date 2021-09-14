@@ -1,0 +1,26 @@
+{
+  "name": "hoops",
+  "version": "1.0.0",
+  "description": "hooper web scrapper type beat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alihsaad/hoops.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alihsaad/hoops/issues"
+  },
+  "homepage": "https://github.com/alihsaad/hoops#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "nodemon": "^2.0.12",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  }
+}
