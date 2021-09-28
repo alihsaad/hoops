@@ -1,5 +1,5 @@
 var admin = require("firebase-admin");
-
+const Player = require('./player.js')
 var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -7,17 +7,11 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-var playerTotals = [];
-var myPlayers = [];
-const Player = require('./player.js')
-//  function presentTotal()
-//  {
 
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const request = require('request');
 const { each } = require('cheerio/lib/api/traversing');
-//const url = 'https://www.basketball-reference.com/leagues/NBA_2021_totals.html';
 
 function getTotalsByYear(url, collectionName)
 {
@@ -97,25 +91,131 @@ function getTotalsByYear(url, collectionName)
     })
 }
 
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2021_totals.html', '2021_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2020_totals.html', '2020_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2019_totals.html', '2019_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2018_totals.html', '2018_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2017_totals.html', '2017_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2016_totals.html', '2016_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2015_totals.html', '2015_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2014_totals.html', '2014_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2013_totals.html', '2013_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2012_totals.html', '2012_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2011_totals.html', '2011_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2010_totals.html', '2010_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2009_totals.html', '2009_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2008_totals.html', '2008_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2007_totals.html', '2007_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2006_totals.html', '2006_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2005_totals.html', '2005_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2004_totals.html', '2004_Stats');
- getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2003_totals.html', '2003_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2021_totals.html', '2021_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2020_totals.html', '2020_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2019_totals.html', '2019_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2018_totals.html', '2018_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2017_totals.html', '2017_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2016_totals.html', '2016_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2015_totals.html', '2015_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2014_totals.html', '2014_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2013_totals.html', '2013_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2012_totals.html', '2012_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2011_totals.html', '2011_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2010_totals.html', '2010_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2009_totals.html', '2009_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2008_totals.html', '2008_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2007_totals.html', '2007_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2006_totals.html', '2006_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2005_totals.html', '2005_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2004_totals.html', '2004_Stats');
+//  getTotalsByYear('https://www.basketball-reference.com/leagues/NBA_2003_totals.html', '2003_Stats');
+
+async function getAverage()
+{
+    
+    var playerTotals = [];
+    
+    var first = await db.collection('2021_Stats').get();
+    first.forEach(doc => {
+            const name = doc.Name;
+            const pos = doc.Position;
+            const age = doc.Age;
+            const team_id = doc.Team_ID;
+            const  g = doc.Games_Played;
+            const gs = doc.Games_Started;
+            const mp = doc.Minutes_Played;
+            const fg = doc.Field_Goals_Made;
+            const fga = doc.Field_Goals_Attempted;
+            const fg3 = doc.Three_Point_Field_Goals;
+            const fg3a = doc.Three_Point_Field_Goal_Attempts;
+            const fg2 = doc.Two_Point_Field_Goals_Made;
+            const fg2a = doc.Two_Point_Field_Goals_Attempted;
+            const ft = doc.Free_Throws_Made;
+            const fta = doc.Free_Throws_Attempted;
+            const orb = doc.Offensive_Rebounds;
+            const drb = doc.Defensive_Rebounds;
+            const trb = doc.Total_Rebounds;
+            const ast = doc.Assists;
+            const stl = doc.Steals;
+            const blk = doc.Blocks;
+            const tov = doc.Turnovers;
+            const pf = doc.Personal_Fouls;
+            const pts =doc.Points;
+            
+            let player = new Player(name, pos, age, team_id, g, gs, mp, fg, fga, fg3,fg3a, fg2, fg2a, ft, fta, orb, drb, trb, ast, stl, blk, tov, pf, pts, 1);
+            console.log(player.getName())
+            playerTotals.push(player);
+           
+    })
+  
+    db.listCollections()
+    .then(listOfCollections=>{
+        listOfCollections.forEach(collection => {
+            if(collection.id != first.id)
+              {
+                collection.forEach(doc =>
+                    {
+                        for(let i = 0; i< playerTotals.length; i++)
+                         {
+                            if (playerTotals[i].getName() == doc.Name)
+                              {
+                                playerTotals[i].setG(playerTotals[i].getG()+ parseInt(doc.Games_Played));
+                                playerTotals[i].setGS(playerTotals[i].getGS()+parseInt(doc.Games_Started));
+                                playerTotals[i].setMP(playerTotals[i].getMP()+parseInt(doc.Minutes_Played));
+                                playerTotals[i].setFG(playerTotals[i].getFG()+parseInt(doc.Field_Goals_Made));
+                                playerTotals[i].setFGA(playerTotals[i].getFGA()+parseInt(doc.Field_Goals_Attempted));
+                                playerTotals[i].setFG3(playerTotals[i].getFG3()+parseInt(doc.Three_Point_Field_Goals));
+                                playerTotals[i].setFG3A(playerTotals[i].getFG3A()+parseInt(doc.Three_Point_Field_Goal_Attempts));
+                                playerTotals[i].setFG2(playerTotals[i].getFG2()+parseInt(doc.Two_Point_Field_Goals_Made));
+                                playerTotals[i].setFG2A(playerTotals[i].getFG2A()+parseInt(doc.Two_Point_Field_Goals_Attempted))
+                                playerTotals[i].setFT(playerTotals[i].getFT()+parseInt(doc.Free_Throws_Made))
+                                playerTotals[i].setFTA(playerTotals[i].getFTA()+parseInt(doc.Free_Throws_Attempted))
+                                playerTotals[i].setORB(playerTotals[i].getORB()+parseInt(doc.Offensive_Rebounds))
+                                playerTotals[i].setDRB(playerTotals[i].getDRB()+ parseInt(doc.Defensive_Rebounds))
+                                playerTotals[i].setTRB(playerTotals[i].getTRB()+parseInt(doc.Total_Rebounds))
+                                playerTotals[i].setAST(playerTotals[i].getAST()+parseInt(doc.Assists))
+                                playerTotals[i].setSTL(playerTotals[i].getSTL()+parseInt(doc.Steals))
+                                playerTotals[i].setBLK(playerTotals[i].getBLK()+parseInt(doc.Blocks))
+                                playerTotals[i].setTOV(playerTotals[i].getTOV()+parseInt(doc.Turnovers))
+                                playerTotals[i].setPF(playerTotals[i].getPF()+parseInt(doc.Personal_Fouls))
+                                playerTotals[i].setPTS(playerTotals[i].getPTS()+parseInt(doc.Points))
+                                playerTotals[i].setYP(playerTotals[i].getYP()+parseInt(1))
+                                
+                              }
+                         }
+                    }) 
+                }
+        })
+    })
+    .catch(error => console.error(error));
+
+   
+    for(let x = 0; x < playerTotals.length; x++)
+    {
+        var player = {
+             "Name": playerTotals[x].getName(),
+             "Games_Played" : playerTotals[x].getG(),
+             "Field_Goal_Percentage": playerTotals[x].getFGPCT() + "%",
+             "Three_Point_Field_Goal_Percentage": playerTotals[x].FG3PCT()+ "%",
+             "Two_Point_Field_Goal_Percentage":playerTotals[x].FG2PCT() + "%",
+             "Free_Throw_Percentage":playerTotals[x].FTPCT() + "%",
+             "Offensive_Rebounds":parseFloat(playerTotals[x].getORB()/playerTotals[x].getG()) ,
+             "Defensive_Rebounds":parseFloat(playerTotals[x].getDRB()/ playerTotals[x].getG()),
+             "Total_Rebounds":parseFloat(playerTotals[x].getTRB()/playerTotals[x].getG()),
+             "Assists":parseFloat(playerTotals[x].getAST()/ playerTotals[x].getG()),
+             "Steals":parseFloat(playerTotals[x].getSTL()/playerTotals[x].getG()),
+             "Blocks":parseFloat(playerTotals[x].getBLK()/playerTotals[x].getG()),
+             "Turnovers":parseFloat(playerTotals[x].getTOV()/playerTotals[x].getG()),
+             "Personal_Fouls":parseFloat(playerTotals[x].getPF()/playerTotals[x].getG()),
+             "Points":parseFloat(playerTotals[x].getPTS()/playerTotals[x].getG())
+        }
+            db.collection("Career Averages").doc(playerTotals[x].getName()).set(player);
+    }
+ 
+}
+getAverage()
+
 
 
 /*
@@ -130,51 +230,7 @@ request(url1,(error,response,html) =>
         const $ = cheerio.load(html);
         const table = $('.full_table').each((i, x) => {
 
-            const name = $(x).find( '[data-stat = "player"]').text()
-            const pos = $(x).find('[data-stat = "pos"]').text()
-            const age = parseInt($(x).find('[data-stat = "age"]').text())
-            const team_id = $(x).find('[data-stat = "team_id"]').text()
-            const g = parseInt($(x).find('[data-stat = "g"]').text())
-            const gs = parseInt($(x).find('[data-stat = "gs"]').text())
-            const mp = parseInt($(x).find('[data-stat = "mp"]').text())
-            const fg = parseInt($(x).find('[data-stat = "fg"]').text())
-            const fga = parseInt($(x).find('[data-stat = "fga"]').text())
-            // const fg_pct = $(x).find('[data-stat = "fg_pct"]').text()
-            const fg3 = parseInt($(x).find('[data-stat = "fg3"]').text())
-            const fg3a = parseInt($(x).find('[data-stat = "fg3a"]').text())
-            // const fg3_pct = $(x).find('[data-stat = "fg3_pct"]').text()
-            const fg2 = parseInt($(x).find('[data-stat = "fg2"]').text())
-            const fg2a = parseInt($(x).find('[data-stat = "fg2a"]').text())
-            // const fg2_pct = $(x).find('[data-stat = "fg2_pct"]').text()
-            // const efg_pct = $(x).find('[data-stat = "efg_pct"]').text()
-            const ft = parseInt($(x).find('[data-stat = "ft"]').text())
-            const fta = parseInt($(x).find('[data-stat = "fta"]').text())
-            // const ft_pct = $(x).find('[data-stat = "ft_pct"]').text()
-            const orb = parseInt($(x).find('[data-stat = "orb"]').text())
-            const drb = parseInt($(x).find('[data-stat = "drb"]').text())
-            const trb = parseInt($(x).find('[data-stat = "trb"]').text())
-            const ast = parseInt($(x).find('[data-stat = "ast"]').text())
-            const stl = parseInt($(x).find('[data-stat = "stl"]').text())
-            const blk = parseInt($(x).find('[data-stat = "blk"]').text())
-            const tov = parseInt($(x).find('[data-stat = "tov"]').text())
-            const pf = parseInt($(x).find('[data-stat = "pf"]').text())
-            const pts = parseInt($(x).find('[data-stat = "pts"]').text())
             
-            
-            for(let i = 0; i< myPlayers.length; i++)
-            {
-                if (myPlayers[i].getName == name)
-                {
-                    let player = new Player(name, pos, age, team_id, myPlayers[i].getG+g , myPlayers[i].getGS+ gs,
-                    myPlayers[i].getMP+ mp, myPlayers[i].getFG+fg, myPlayers[i].getFGA+fga, myPlayers[i].getFG3+ fg3,myPlayers[i].getFG3A+ fg3a, myPlayers[i].getfg2+ fg2, 
-                    myPlayers[i].getFG2A+ fg2a, myPlayers[i].getFT+ ft, myPlayers[i].getFTA+ fta, myPlayers[i].getORB+ orb,
-                    myPlayers[i].getDRB+ drb, myPlayers[i].getTRB+ trb, myPlayers[i].getG+ ast, myPlayers[i].getSTL+ stl, myPlayers[i].getBLK +blk, myPlayers[i].getTOV+tov, myPlayers[i].getPF+ pf, myPlayers[i].getPTS+ pts);
-                    playerTotals.push(player);  
-                    console.log(myPlayers[i].getName + " " + myPlayers[i].getG);
-                    console.log(playerTotals[i].getName + " " + playerTotals[i].getG);
-                }
-
-            }
             
            
             // console.log(player.getName())
