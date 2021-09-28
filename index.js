@@ -1,5 +1,5 @@
 var admin = require("firebase-admin");
-const Player = require('./player.js')
+
 var serviceAccount = require("./serviceAccountKey.json");
 
 admin.initializeApp({
@@ -7,11 +7,12 @@ admin.initializeApp({
 });
 
 const db = admin.firestore();
-
+const Player = require("./player.js");
 const rp = require('request-promise');
 const cheerio = require('cheerio');
 const request = require('request');
 const { each } = require('cheerio/lib/api/traversing');
+
 
 function getTotalsByYear(url, collectionName)
 {
@@ -115,39 +116,49 @@ async function getAverage()
 {
     
     var playerTotals = [];
+    try {
+        
     
     var first = await db.collection('2021_Stats').get();
     first.forEach(doc => {
-            const name = doc.Name;
-            const pos = doc.Position;
-            const age = doc.Age;
-            const team_id = doc.Team_ID;
-            const  g = doc.Games_Played;
-            const gs = doc.Games_Started;
-            const mp = doc.Minutes_Played;
-            const fg = doc.Field_Goals_Made;
-            const fga = doc.Field_Goals_Attempted;
-            const fg3 = doc.Three_Point_Field_Goals;
-            const fg3a = doc.Three_Point_Field_Goal_Attempts;
-            const fg2 = doc.Two_Point_Field_Goals_Made;
-            const fg2a = doc.Two_Point_Field_Goals_Attempted;
-            const ft = doc.Free_Throws_Made;
-            const fta = doc.Free_Throws_Attempted;
-            const orb = doc.Offensive_Rebounds;
-            const drb = doc.Defensive_Rebounds;
-            const trb = doc.Total_Rebounds;
-            const ast = doc.Assists;
-            const stl = doc.Steals;
-            const blk = doc.Blocks;
-            const tov = doc.Turnovers;
-            const pf = doc.Personal_Fouls;
-            const pts =doc.Points;
+            const obj = doc.data();
+            console.log(obj.Personal_Fouls)
+            const name = obj.Name;
+            const pos = obj.Position;
+            const age = obj.Age;
+            const team_id = obj.Team_ID;
+            const  g = obj.Games_Played;
+            const gs = obj.Games_Started;
+            const mp = obj.Minutes_Played;
+            const fg = obj.Field_Goals_Made;
+            const fga = obj.Field_Goals_Attempted;
+            const fg3 = obj.Three_Point_Field_Goals;
+            const fg3a = obj.Three_Point_Field_Goal_Attempts;
+            const fg2 = obj.Two_Point_Field_Goals_Made;
+            const fg2a = obj.Two_Point_Field_Goals_Attempted;
+            const ft = obj.Free_Throws_Made;
+            const fta = obj.Free_Throws_Attempted;
+            const orb = obj.Offensive_Rebounds;
+            const drb = obj.Defensive_Rebounds;
+            const trb = obj.Total_Rebounds;
+            const ast = obj.Assists;
+            const stl = obj.Steals;
+            const blk = obj.Blocks;
+            const tov = obj.Turnovers;
+            const pf = obj.Personal_Fouls;
+            const pts =obj.Points;
             
-            let player = new Player(name, pos, age, team_id, g, gs, mp, fg, fga, fg3,fg3a, fg2, fg2a, ft, fta, orb, drb, trb, ast, stl, blk, tov, pf, pts, 1);
-            console.log(player.getName())
-            playerTotals.push(player);
-           
+            
+            var player1 = new Player(name, pos, age, team_id, g, gs, mp, fg, fga, fg3,fg3a, fg2, fg2a, ft, fta, orb, drb, trb, ast, stl, blk, tov, pf, pts, 1);
+            // console.log(pos)
+            console.log(player1.getName())
+            playerTotals.push(player1);
     })
+
+} catch (error) {
+    console.log(error + " yeah its an error")
+    return
+}
   
     db.listCollections()
     .then(listOfCollections=>{
